@@ -1,0 +1,27 @@
+{
+  "name": "h-mailer",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "cheerio": "^0.22.0",
+    "h-worker": "git+ssh://git@bitbucket.org/habemus-tutti/h-worker.git",
+    "mustache": "^2.2.1",
+    "nodemailer": "^2.6.4",
+    "nodemailer-sendgrid-transport": "^0.2.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-mocha": "^3.0.1",
+    "mockery": "^1.7.0",
+    "nodemailer-stub-transport": "^1.1.0",
+    "should": "^11.1.0"
+  }
+}
