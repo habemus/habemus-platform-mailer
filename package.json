@@ -12,6 +12,7 @@
     "bluebird": "^3.4.6",
     "cheerio": "^0.22.0",
     "h-worker": "git+ssh://git@bitbucket.org/habemus-tutti/h-worker.git",
+    "habemus-emails": "git+ssh://git@bitbucket.org/habemus-tutti/habemus-emails.git",
     "mustache": "^2.2.1",
     "nodemailer": "^2.6.4",
     "nodemailer-sendgrid-transport": "^0.2.0"

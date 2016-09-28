@@ -66,7 +66,7 @@ HMailerServer.prototype.workerFn = function (payload, logger) {
   var to       = payload.to;
   var data     = payload.data;
 
-  return this.sendEmail(template, data);
+  return this.sendEmail(template, from, to, data);
 };
 
 /**
@@ -96,6 +96,8 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
   return this.mailRenderer.render(template, data)
     .then((mail) => {
 
+      console.log(mail);
+
       // setup e-mail data
       var mailOptions = {
         from: from,
@@ -103,7 +105,6 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
         subject: mail.subject,
         html: mail.body,
       };
-
       return new Bluebird((resolve, reject) => {
         this.nodemailer.sendMail(mailOptions, (err, sentEmailInfo) => {
           if (err) { reject(err); }
@@ -112,6 +113,16 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
           resolve(sentEmailInfo);
         });
       });
+    })
+    .then((sentEmailInfo) => {
+      console.log('e-mail sent', sentEmailInfo);
+
+      return sentEmailInfo;
+    })
+    .catch((err) => {
+      console.log('error sending e-mail', err.stack);
+
+      throw err;
     });
 
 };
