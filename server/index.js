@@ -5,6 +5,8 @@ const util = require('util');
 const HWorkerServer = require('h-worker/server');
 const Bluebird      = require('bluebird');
 const nodemailer    = require('nodemailer');
+const urlWhitelist  = require('@habemus/url-whitelist');
+const debug         = require('debug')('h-mailer');
 
 // own
 const MailRenderer = require('../lib/mail-renderer');
@@ -24,6 +26,10 @@ function HMailerServer(options) {
     throw new errors.InvalidOption('transport', 'required');
   }
 
+  if (!options.destinationHostWhitelist) {
+    throw new errors.InvalidOption('destinationHostWhitelist', 'required');
+  }
+
   /**
    * The nodemailer instance
    * @type {nodemailer}
@@ -36,6 +42,12 @@ function HMailerServer(options) {
   this.mailRenderer = new MailRenderer({
     templatesPath: options.templatesPath,
   });
+
+  /**
+   * Function that checks whether a url is whitelisted.
+   * @type {Function}
+   */
+  this._isURLWhitelisted = urlWhitelist(options.destinationHostWhitelist);
 }
 util.inherits(HMailerServer, HWorkerServer);
 
@@ -66,7 +78,27 @@ HMailerServer.prototype.workerFn = function (payload, logger) {
   var to       = payload.to;
   var data     = payload.data;
 
+  debug('sendEmail', payload);
+
   return this.sendEmail(template, from, to, data);
+};
+
+/**
+ * Checks if the email is whitelisted for sending.
+ * 
+ * @param  {String}  email
+ * @return {Boolean}
+ */
+HMailerServer.prototype.isEmailWhitelisted = function (email) {
+
+  var emailHost = email.split('@')[1];
+
+  if (!emailHost) {
+    return false;
+  } else {
+    return this._isURLWhitelisted(emailHost);
+  }
+
 };
 
 /**
@@ -91,12 +123,16 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
     return Bluebird.reject(new errors.InvalidOption('to', 'required'));
   }
 
+  // check if the 'to' is whitelisted
+  if (!this.isEmailWhitelisted(to)) {
+    debug('email not whitelisted', to);
+    return Bluebird.reject(new errors.InvalidOption('to', 'notWhitelisted'));
+  }
+
   data = data || {};
 
   return this.mailRenderer.render(template, data)
     .then((mail) => {
-
-      console.log(mail);
 
       // setup e-mail data
       var mailOptions = {
@@ -115,13 +151,15 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
       });
     })
     .then((sentEmailInfo) => {
-      console.log('e-mail sent', sentEmailInfo);
-
+      debug('email successfully sent', {
+        from: from,
+        to: to,
+        subject: mail.subject
+      });
       return sentEmailInfo;
     })
     .catch((err) => {
-      console.log('error sending e-mail', err.stack);
-
+      debug('error sending email', err);
       throw err;
     });
 

@@ -47,6 +47,7 @@ describe('HMailerServer', function () {
       var server = new HMailerServer({
         transport: transport,
         templatesPath: path.join(FIXTURES_PATH, 'templates'),
+        destinationHostWhitelist: '*',
       });
 
       // email sending configuration
