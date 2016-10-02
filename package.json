@@ -1,6 +1,6 @@
 {
   "name": "h-mailer",
-  "version": "0.0.0",
+  "version": "1.0.0-beta",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "gulp": "^3.9.1",
     "gulp-istanbul": "^1.1.1",
     "gulp-mocha": "^3.0.1",
+    "gulp-nodemon": "^2.2.1",
     "mockery": "^1.7.0",
     "nodemailer-stub-transport": "^1.1.0",
     "should": "^11.1.0"
