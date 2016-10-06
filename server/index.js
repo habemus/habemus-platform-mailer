@@ -131,8 +131,11 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
 
   data = data || {};
 
+  var _mail;
+
   return this.mailRenderer.render(template, data)
     .then((mail) => {
+      _mail = mail;
 
       // setup e-mail data
       var mailOptions = {
@@ -154,7 +157,7 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
       debug('email successfully sent', {
         from: from,
         to: to,
-        subject: mail.subject
+        subject: _mail.subject
       });
       return sentEmailInfo;
     })
