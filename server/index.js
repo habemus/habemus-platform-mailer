@@ -149,16 +149,20 @@ HMailerServer.prototype.sendEmail = function (template, from, to, data) {
           if (err) { reject(err); }
 
           // make sure to return nothing
-          resolve(sentEmailInfo);
+          resolve();
         });
       });
     })
-    .then((sentEmailInfo) => {
-      debug('email successfully sent', {
+    .then(() => {
+
+      var sentEmailInfo = {
         from: from,
         to: to,
         subject: _mail.subject
-      });
+      };
+
+      debug('email successfully sent', sentEmailInfo);
+
       return sentEmailInfo;
     })
     .catch((err) => {

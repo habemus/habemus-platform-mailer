@@ -1,40 +1,26 @@
 // third-party
 const sgTransport   = require('nodemailer-sendgrid-transport');
 const habemusEmails = require('habemus-emails');
+const envOptions    = require('@habemus/env-options');
 
 // own
 const HMailerServer = require('../server');
 
-// env variables
-var sendgridAPIKey           = process.env.SENDGRID_API_KEY;
-var rabbitMQURI              = process.env.RABBIT_MQ_URI;
-var destinationHostWhitelist = process.env.DESTINATION_HOST_WHITELIST;
-
-if (!sendgridAPIKey) {
-  throw new Error('SENDGRID_API_KEY is required');
-}
-
-if (!rabbitMQURI) {
-  throw new Error('RABBIT_MQ_URI is required');
-}
-
-// this is mainly to prevent accidental email sending
-// in test environments the DESTINATION_HOST_WHITELIST should be set to
-// `habem.us` so that only emails sent to user@habem.us accounts are actually sent
-if (!destinationHostWhitelist) {
-  throw new Error('DESTINATION_HOST_WHITELIST is required');
-}
-
-var hMailer = new HMailerServer({
-  transport: sgTransport({
-    auth: {
-      api_key: sendgridAPIKey,
-    }
-  }),
+var options = envOptions({
+  sendgridAPIKey: 'fs:SENDGRID_API_KEY_PATH',
+  rabbitMQURI: 'fs:RABBIT_MQ_URI_PATH',
   templatesPath: habemusEmails.templatesPath,
-  destinationHostWhitelist: destinationHostWhitelist,
+  destinationHostWhitelist: 'list:DESTINATION_HOST_WHITELIST',
 });
 
-hMailer.connect(rabbitMQURI).then(() => {
+options.transport = sgTransport({
+  auth: {
+    api_key: options.sendgridAPIKey,
+  }
+});
+
+var hMailer = new HMailerServer(options);
+
+hMailer.connect(options.rabbitMQURI).then(() => {
   console.log('hMailer successfully connected');
 });
