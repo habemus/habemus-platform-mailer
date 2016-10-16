@@ -24,7 +24,7 @@ gulp.task('test', ['pre-test'], function () {
 
 gulp.task('nodemon', function () {
   gulpNodemon({
-    script: 'cli/start.js',
+    script: 'cli/dev-start.js',
     env: {
       RABBIT_MQ_URI: 'amqp://192.168.99.100',
       DESTINATION_HOST_WHITELIST: 'habem.us',
