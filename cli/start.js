@@ -21,6 +21,19 @@ options.transport = sgTransport({
 
 var hMailer = new HMailerServer(options);
 
+/**
+ * Exit process in case of connection failure.
+ * Allow environment to manage restart.
+ */
+hMailer.on('channel-close', (e) {
+  console.warn('hMailer channel closed (connection lost)', e);
+  process.exit(1);
+});
+
 hMailer.connect(options.rabbitMQURI).then(() => {
   console.log('hMailer successfully connected');
+})
+.catch((err) => {
+  console.warn('hMailer error connecting', err);
+  process.exit(1);
 });
