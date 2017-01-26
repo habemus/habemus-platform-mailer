@@ -25,7 +25,7 @@ var hMailer = new HMailerServer(options);
  * Exit process in case of connection failure.
  * Allow environment to manage restart.
  */
-hMailer.on('channel-close', (e) {
+hMailer.on('channel-close', (e) => {
   console.warn('hMailer channel closed (connection lost)', e);
   process.exit(1);
 });
