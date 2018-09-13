@@ -2,7 +2,7 @@
 const util = require('util');
 
 // third-party
-const HWorkerClient = require('h-worker/client');
+const HWorkerClient = require('@habemus/amqp-worker/client');
 
 const errors = HWorkerClient.errors;
 

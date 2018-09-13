@@ -2,7 +2,7 @@
 const util = require('util');
 
 // third-party
-const HWorkerServer = require('h-worker/server');
+const HWorkerServer = require('@habemus/amqp-worker/server');
 const Bluebird      = require('bluebird');
 const nodemailer    = require('nodemailer');
 const urlWhitelist  = require('@habemus/url-whitelist');

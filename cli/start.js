@@ -1,6 +1,6 @@
 // third-party
 const sgTransport   = require('nodemailer-sendgrid-transport');
-const habemusEmails = require('habemus-emails');
+const habemusEmails = require('habemus-transactional-email-templates');
 const envOptions    = require('@habemus/env-options');
 
 // own
